@@ -92,7 +92,7 @@ from sglang.srt.utils.hf_transformers_utils import get_tokenizer
 _is_npu = is_npu()
 if _is_npu:
     import torch_npu
-    
+
 profile_activities = [torch.profiler.ProfilerActivity.CPU] + [
     profiler_activity
     for available, profiler_activity in [
@@ -103,15 +103,15 @@ profile_activities = [torch.profiler.ProfilerActivity.CPU] + [
 ]
 if _is_npu:
     profile_activities = [
-        torch_npu.profiler.ProfilerActivity.CPU, 
+        torch_npu.profiler.ProfilerActivity.CPU,
         torch_npu.profiler.ProfilerActivity.NPU,
     ]
-    
+
 
 def start_profile(
-    profile_activities, 
-    profile_record_shapes=False, 
-    rank_print=print, 
+    profile_activities,
+    profile_record_shapes=False,
+    rank_print=print,
     trace_filepath=None
 ):
     """
@@ -125,7 +125,7 @@ def start_profile(
         except Exception as e:
             rank_print(f"Failed to start CUDA profiler: {e}")
         return None
-    elif _is_npu:
+    elif _is_npu and trace_filepath is not None:
         activities = []
         if "CPU" in profile_activities:
             activities.append(torch_npu.profiler.ProfilerActivity.CPU)
@@ -140,7 +140,7 @@ def start_profile(
             os.makedirs(trace_filepath, exist_ok=True)
             profiler = torch_npu.profiler.profile(
                 activities=activities,
-                on_trace_ready = torch_npu.profiler.tensorboard_trace_handler(
+                on_trace_ready=torch_npu.profiler.tensorboard_trace_handler(
                     trace_filepath
                 ),
                 record_shapes=profile_record_shapes,
@@ -595,10 +595,10 @@ def latency_test_run_once(
     if enable_profile_prefill:
         trace_filename = _create_torch_profiler_path(
             profile_filename_prefix,
-            batch_size, 
-            input_len, 
-            output_len, 
-            "prefill", 
+            batch_size,
+            input_len,
+            output_len,
+            "prefill",
             ".trace.json.gz",
         )
         stop_profile(
@@ -642,10 +642,10 @@ def latency_test_run_once(
 
         if enable_profile_decode and i == profile_step_of_interest:
             trace_filename = _create_torch_profiler_path(
-                profile_filename_prefix, 
-                batch_size, 
-                input_len, 
-                output_len, 
+                profile_filename_prefix,
+                batch_size,
+                input_len,
+                output_len,
                 "decode", 
                 ".trace.json.gz"
             )
