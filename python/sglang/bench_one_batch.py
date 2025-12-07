@@ -112,7 +112,7 @@ def start_profile(
     profile_activities,
     profile_record_shapes=False,
     rank_print=print,
-    trace_filepath=None
+    trace_filepath=None,
 ):
     """
     Abstracted function to start profiling based on profile_activities.
@@ -646,8 +646,8 @@ def latency_test_run_once(
                 batch_size,
                 input_len,
                 output_len,
-                "decode", 
-                ".trace.json.gz"
+                "decode",
+                ".trace.json.gz",
             )
             stop_profile(
                 profiler,
